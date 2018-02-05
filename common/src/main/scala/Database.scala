@@ -20,6 +20,9 @@ class VehicleDatabase(override val connector: CassandraConnection) extends Datab
       .add(VehiclesByTileModel.store(vehicle))
       .future()
 
+  def getVehicleById(id: String) =
+    VehiclesModel.getVehicleById(id)
+
   def vehiclesList(): Future[List[TiledVehicle]] =
     VehiclesModel.getVehicles()
 

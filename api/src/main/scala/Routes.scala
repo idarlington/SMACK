@@ -1,4 +1,4 @@
-import ServiceActor.GetVehicles
+import ServiceActor.{ GetVehicle, GetVehicles }
 import akka.actor.{ ActorRef, ActorSystem }
 import akka.event.Logging
 
@@ -40,28 +40,9 @@ trait Routes extends JsonFormatSupport {
     } ~
     path("vehicles" / "vehicle" / IntNumber / "lastPosition") { vehicleId =>
       get {
-        complete("Welocme")
-      }
-    } ~
-    path("order" / IntNumber) { id =>
-      get {
-        complete {
-          "Received GET request for order " + id
-        }
-      } ~
-      put {
-        complete {
-          "Received PUT request for order " + id
-        }
+        val lastEntry: Future[Location] = (serviceActor ? GetVehicle(vehicleId.toString)).mapTo[Location]
+        complete(lastEntry)
       }
     }
   }
 }
-/*
-pathPrefix("vehicles" / "vehicle" / IntNumber / "lastPosition") { vehicleId =>
-  path(matcher) {
-    get {
-      complete("Welcome")
-    }
-  }
-}*/

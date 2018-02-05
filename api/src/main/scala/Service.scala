@@ -5,6 +5,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 object ServiceActor {
   final case class GetVehicles()
+  final case class GetVehicle(id: String)
 
   def props: Props = Props[ServiceActor]()
 }
@@ -22,6 +23,17 @@ class ServiceActor extends Actor with ActorLogging {
         case Failure(t)      => {}
       }
     }
+    case GetVehicle(id) => {
+      val sender_ : ActorRef = sender()
+      Database.getVehicleById(id) onComplete {
+        case Success(result) => {
+          val latitude  = result.get.latitude
+          val longitude = result.get.longitude
+          val location  = Location(longitude, latitude)
+          sender_ ! location
+        }
+        case Failure(t) => {}
+      }
+    }
   }
 }
-//TODO Clean up naming
