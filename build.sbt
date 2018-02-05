@@ -76,12 +76,16 @@ lazy val dependencies =
   }
 
 lazy val commonDependencies = Seq(
-  "com.typesafe.akka" %% "akka-actor"           % akkaVersion,
-  "com.typesafe.akka" %% "akka-stream"          % akkaVersion,
-  "com.typesafe.akka" %% "akka-http"            % "10.0.10",
-  "org.apache.kafka"  %% "kafka"                % "0.11.0.2",
-  "com.typesafe.akka" %% "akka-http-spray-json" % "10.1.0-RC1",
-  "com.outworkers"    %% "phantom-dsl"          % "2.20.0"
+  "com.typesafe.akka"      %% "akka-actor"              % akkaVersion,
+  "com.typesafe.akka"      %% "akka-stream"             % akkaVersion,
+  "com.typesafe.akka"      %% "akka-http"               % "10.0.10",
+  "org.apache.kafka"       %% "kafka"                   % "0.11.0.2",
+  "com.typesafe.akka"      %% "akka-http-spray-json"    % "10.1.0-RC1",
+  "com.outworkers"         %% "phantom-dsl"             % "2.20.0",
+  "com.typesafe"           % "config"                   % "1.3.1",
+  "com.datastax.cassandra" % "cassandra-driver-core"    % "3.4.0",
+  "com.datastax.cassandra" % "cassandra-driver-extras"  % "3.4.0",
+  "com.datastax.cassandra" % "cassandra-driver-mapping" % "3.4.0"
 ) map (_.exclude("org.slf4j", "log4j-over-slf4j"))
 
 // SETTINGS

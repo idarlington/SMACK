@@ -1,9 +1,10 @@
+import com.datastax.driver.core.{ Cluster, Session }
 import com.lunatech.collector.Connector._
-
 import com.outworkers.phantom.connectors.CassandraConnection
 import com.outworkers.phantom.dsl._
 
 import scala.concurrent.Future
+import scala.collection.JavaConverters._
 
 /**
  * This is our Database object that wraps our two existing tables,
@@ -28,6 +29,18 @@ class VehicleDatabase(override val connector: CassandraConnection) extends Datab
 
   def getVehiclesID(): Future[List[String]] =
     VehiclesModel.getVehiclesID()
+
+  def vehiclesPerTile(): List[CountPerTile] = {
+    val result = session.execute("select tile,count(*) from collector.vehicles_by_tile group by tile;").asScala.toStream
+    result.map { row =>
+      val count = row.getLong("count")
+      val tile  = row.getTupleValue("tile")
+      val tileX = tile.getInt(0)
+      val tileY = tile.getInt(1)
+      CountPerTile((tileX, tileY), count)
+    }.toList
+  }
+
 }
 
 /**

@@ -60,13 +60,19 @@ final case class TiledVehicles(items: List[TiledVehicle])
 
 final case class Location(longitude: Double, latitude: Double)
 
+final case class CountPerTile(tile: (Int, Int), count: Long)
+
+final case class VehiclesCountPerTile(counts: List[CountPerTile])
+
 trait JsonFormatSupport extends SprayJsonSupport {
 
   import spray.json.DefaultJsonProtocol._
 
-  implicit val vehicle       = jsonFormat8(Vehicle)
-  implicit val vehicleList   = jsonFormat1(VehicleList)
-  implicit val tiledVehicle  = jsonFormat9(TiledVehicle)
-  implicit val tiledVehicles = jsonFormat1(TiledVehicles)
-  implicit val location      = jsonFormat2(Location)
+  implicit val vehicle              = jsonFormat8(Vehicle)
+  implicit val vehicleList          = jsonFormat1(VehicleList)
+  implicit val tiledVehicle         = jsonFormat9(TiledVehicle)
+  implicit val tiledVehicles        = jsonFormat1(TiledVehicles)
+  implicit val location             = jsonFormat2(Location)
+  implicit val countPerTile         = jsonFormat2(CountPerTile)
+  implicit val vehiclesCountPerTile = jsonFormat1(VehiclesCountPerTile)
 }

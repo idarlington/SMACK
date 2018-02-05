@@ -6,6 +6,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 object ServiceActor {
   final case class GetVehicles()
   final case class GetVehicle(id: String)
+  final case class VehiclesPerTile()
 
   def props: Props = Props[ServiceActor]()
 }
@@ -34,6 +35,10 @@ class ServiceActor extends Actor with ActorLogging {
         }
         case Failure(t) => {}
       }
+    }
+    case VehiclesPerTile => {
+      val vehiclesPerTile = Database.vehiclesPerTile()
+      sender() ! VehiclesCountPerTile(vehiclesPerTile)
     }
   }
 }

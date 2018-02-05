@@ -1,10 +1,10 @@
-import ServiceActor.{ GetVehicle, GetVehicles }
+import ServiceActor._
 import akka.actor.{ ActorRef, ActorSystem }
 import akka.event.Logging
 
 import scala.concurrent.duration._
 import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.{ PathMatcher, PathMatcher1, Route }
+import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.directives.MethodDirectives.get
 import akka.http.scaladsl.server.directives.RouteDirectives.complete
 
@@ -22,9 +22,6 @@ trait Routes extends JsonFormatSupport {
 
   implicit lazy val timeout = Timeout(3.seconds)
 
-  val matcher: PathMatcher1[Int] =
-  "foo" / "bar" / IntNumber / "edit"
-
   lazy val vehicleRoutes: Route = {
     pathPrefix("api" / "vehicles" / "list") {
       concat(
@@ -38,10 +35,16 @@ trait Routes extends JsonFormatSupport {
         }
       )
     } ~
-    path("vehicles" / "vehicle" / IntNumber / "lastPosition") { vehicleId =>
+    path("api" / "vehicles" / "vehicle" / IntNumber / "lastPosition") { vehicleId =>
       get {
         val lastEntry: Future[Location] = (serviceActor ? GetVehicle(vehicleId.toString)).mapTo[Location]
         complete(lastEntry)
+      }
+    } ~
+    path("api" / "vehicles" / "vehiclesPerTile") {
+      get {
+        val vehilesPerTile: Future[VehiclesCountPerTile] = (serviceActor ? VehiclesPerTile).mapTo[VehiclesCountPerTile]
+        complete(vehilesPerTile)
       }
     }
   }
