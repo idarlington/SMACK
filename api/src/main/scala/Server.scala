@@ -6,7 +6,7 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 
-object Main extends App with Routes {
+object Server extends App with Routes {
 
   implicit val system: ActorSystem             = ActorSystem("apiHttpServer")
   implicit val materializer: ActorMaterializer = ActorMaterializer()
