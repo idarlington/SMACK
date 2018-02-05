@@ -58,8 +58,6 @@ final case class VehicleList(items: List[Vehicle])
 
 final case class TiledVehicles(items: List[TiledVehicle])
 
-final case class AllVehicles(items: List[String])
-
 trait JsonFormatSupport extends SprayJsonSupport {
 
   import spray.json.DefaultJsonProtocol._
@@ -68,5 +66,4 @@ trait JsonFormatSupport extends SprayJsonSupport {
   implicit val vehicleList   = jsonFormat1(VehicleList)
   implicit val tiledVehicle  = jsonFormat9(TiledVehicle)
   implicit val tiledVehicles = jsonFormat1(TiledVehicles)
-  implicit val allVehicles   = jsonFormat1(AllVehicles)
 }

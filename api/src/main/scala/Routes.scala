@@ -4,7 +4,7 @@ import akka.event.Logging
 
 import scala.concurrent.duration._
 import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.Route
+import akka.http.scaladsl.server.{ PathMatcher, PathMatcher1, Route }
 import akka.http.scaladsl.server.directives.MethodDirectives.get
 import akka.http.scaladsl.server.directives.RouteDirectives.complete
 
@@ -22,8 +22,11 @@ trait Routes extends JsonFormatSupport {
 
   implicit lazy val timeout = Timeout(3.seconds)
 
+  val matcher: PathMatcher1[Int] =
+  "foo" / "bar" / IntNumber / "edit"
+
   lazy val vehicleRoutes: Route = {
-    pathPrefix("vehicles" / "list") {
+    pathPrefix("api" / "vehicles" / "list") {
       concat(
         pathEnd {
           concat(
@@ -34,7 +37,31 @@ trait Routes extends JsonFormatSupport {
           )
         }
       )
+    } ~
+    path("vehicles" / "vehicle" / IntNumber / "lastPosition") { vehicleId =>
+      get {
+        complete("Welocme")
+      }
+    } ~
+    path("order" / IntNumber) { id =>
+      get {
+        complete {
+          "Received GET request for order " + id
+        }
+      } ~
+      put {
+        complete {
+          "Received PUT request for order " + id
+        }
+      }
     }
   }
-
 }
+/*
+pathPrefix("vehicles" / "vehicle" / IntNumber / "lastPosition") { vehicleId =>
+  path(matcher) {
+    get {
+      complete("Welcome")
+    }
+  }
+}*/
