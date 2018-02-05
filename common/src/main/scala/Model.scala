@@ -46,12 +46,9 @@ abstract class VehiclesModel extends Table[VehiclesModel, TiledVehicle] {
       .consistencyLevel_=(ConsistencyLevel.ONE)
       .one()
 
-  def get(): Future[Option[TiledVehicle]] =
-    select.one()
-
   def getVehicles(): Future[List[TiledVehicle]] =
     select.fetch()
 
-  def listVehicles(): Future[List[String]] =
+  def getVehiclesID(): Future[List[String]] =
     select(_.id).fetch
 }
