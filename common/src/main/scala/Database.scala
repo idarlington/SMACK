@@ -1,5 +1,4 @@
-import com.datastax.driver.core.{ Cluster, Session }
-import com.lunatech.collector.Connector._
+import Connector._
 import com.outworkers.phantom.connectors.CassandraConnection
 import com.outworkers.phantom.dsl._
 
