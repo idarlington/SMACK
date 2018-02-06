@@ -8,6 +8,8 @@ import akka.http.scaladsl.server.Directives.complete
 import akka.http.scaladsl.server._
 import akka.stream.ActorMaterializer
 
+import Directives._
+
 object Server extends App with Routes {
 
   implicit def myRejectionHandler: RejectionHandler =
@@ -31,6 +33,21 @@ object Server extends App with Routes {
       }
       .handleNotFound { complete((NotFound, "Not here!")) }
       .result()
+
+  implicit def myExceptionHandler: ExceptionHandler =
+    ExceptionHandler {
+      case _: ArithmeticException =>
+        extractUri { uri =>
+          println(s"Request to $uri could not be handled normally")
+          complete(HttpResponse(InternalServerError, entity = "Bad numbers, bad result!!!"))
+        }
+
+      case _: java.util.NoSuchElementException =>
+        extractUri { uri =>
+          println(s"Request to $uri could not be handled normally")
+          complete(HttpResponse(BadRequest, entity = "Bad numbers, bad result!!!"))
+        }
+    }
 
   implicit val system: ActorSystem             = ActorSystem("apiHttpServer")
   implicit val materializer: ActorMaterializer = ActorMaterializer()
