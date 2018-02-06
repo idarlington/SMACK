@@ -32,6 +32,8 @@ lazy val collector = project
       dependencies.monocleMacro
     )
   )
+  .enablePlugins(JavaAppPackaging)
+  .enablePlugins(DockerPlugin)
   .dependsOn(
     common
   )
@@ -39,12 +41,15 @@ lazy val collector = project
 lazy val api = project
   .settings(
     name := "api",
+    dockerExposedPorts := Seq(8081),
     settings,
     assemblySettings,
     libraryDependencies ++= commonDependencies ++ Seq(
       dependencies.pureconfig
     )
   )
+  .enablePlugins(JavaAppPackaging)
+  .enablePlugins(DockerPlugin)
   .dependsOn(
     common
   )
@@ -134,3 +139,6 @@ lazy val assemblySettings = Seq(
     case _                             => MergeStrategy.first
   }
 )
+
+enablePlugins(JavaAppPackaging)
+enablePlugins(DockerPlugin)

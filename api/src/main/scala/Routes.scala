@@ -1,6 +1,7 @@
 import ServiceActor._
 import akka.actor.{ ActorRef, ActorSystem }
 import akka.event.Logging
+import akka.http.scaladsl.model.StatusCodes
 
 import scala.concurrent.duration._
 import akka.http.scaladsl.server.Directives._
@@ -29,7 +30,7 @@ trait Routes extends JsonFormatSupport {
           concat(
             get {
               val vehicles: Future[TiledVehicles] = (serviceActor ? GetVehicles).mapTo[TiledVehicles]
-              complete(vehicles)
+              complete(StatusCodes.OK, vehicles)
             }
           )
         }
