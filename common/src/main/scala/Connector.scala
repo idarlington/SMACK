@@ -10,16 +10,16 @@ import scala.collection.JavaConverters._
 object Connector {
   private val config = ConfigFactory.load()
 
-  private val hosts    = List("cassandra") //config.getStringList("cassandra.host").asScala
-  private val keyspace = "collector"       //config.getString("cassandra.keyspace")
+  private val hosts: List[String] = config.getStringList("cassandra.hosts").asScala.toList //List("cassandra")
+  private val keyspace            = config.getString("cassandra.keyspace")
 
   private val cluster: Cluster = Cluster
     .builder()
     .withClusterName("myCluster")
-    .addContactPoint("cassandra")
+    .addContactPoint(hosts(0))
     .build()
 
-  val session: Session = cluster.connect("collector")
+  val session: Session = cluster.connect(keyspace)
 
   lazy val connector: CassandraConnection = ContactPoints(hosts).keySpace(keyspace)
 
