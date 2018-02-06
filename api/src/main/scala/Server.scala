@@ -47,6 +47,9 @@ object Server extends App with Routes {
           println(s"Request to $uri could not be handled normally")
           complete(HttpResponse(BadRequest, entity = "Bad numbers, bad result!!!"))
         }
+      case _: akka.pattern.AskTimeoutException => {
+        complete(HttpResponse(BadRequest, entity = "Wrong Request"))
+      }
     }
 
   implicit val system: ActorSystem             = ActorSystem("apiHttpServer")

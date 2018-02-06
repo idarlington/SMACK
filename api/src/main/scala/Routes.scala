@@ -38,7 +38,8 @@ trait Routes extends JsonFormatSupport {
     } ~
     path("api" / "vehicles" / "vehicle" / IntNumber / "lastPosition") { vehicleId =>
       get {
-        val lastEntry: Future[Location] = (serviceActor ? GetVehicle(vehicleId.toString)).mapTo[Location]
+        val lastEntry: Future[Option[Location]] =
+          (serviceActor ? GetVehicle(vehicleId.toString)).mapTo[Option[Location]]
         rejectEmptyResponse(complete(lastEntry))
       }
     } ~

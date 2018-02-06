@@ -28,12 +28,12 @@ class ServiceActor extends Actor with ActorLogging {
       val sender_ : ActorRef = sender()
       Database.getVehicleById(id) onComplete {
         case Success(result) => {
-          val latitude  = result.get.latitude
-          val longitude = result.get.longitude
-          val location  = Location(longitude, latitude)
-          sender_ ! location
+          result match {
+            case Some(location) => { sender_ ! Option(Location(location.latitude, location.longitude)) }
+            case None           => { sender_ ! None }
+          }
         }
-        case Failure(t) => {}
+        case Failure(t) => { sender_ ! None }
       }
     }
     case VehiclesPerTile => {
