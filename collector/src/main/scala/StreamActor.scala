@@ -8,6 +8,8 @@ import akka.pattern.pipe
 import akka.stream.{ ActorMaterializer, ActorMaterializerSettings }
 import org.apache.kafka.clients.producer.{ KafkaProducer, ProducerConfig }
 
+import AppConfiguration._
+
 class StreamActor extends Actor with ActorLogging with JsonFormatSupport {
 
   import context.dispatcher
@@ -19,10 +21,9 @@ class StreamActor extends Actor with ActorLogging with JsonFormatSupport {
   val tileSystem    = new TileSystem()
   val http          = Http(context.system)
   val props         = new Properties()
-  val levelOfDetail = 15 //TODO move to config file
 
-  val URL       = "http://api.metro.net/agencies/lametro/vehicles/"
-  val KafkaHost = "localhost:9092"
+  val URL       = collectorURL
+  val KafkaHost = s"$kafkaBroker:$kafkaPort"
 
   props.put("bootstrap.servers", KafkaHost)
   props.put("client.id", "Producer")

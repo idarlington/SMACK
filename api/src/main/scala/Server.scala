@@ -9,6 +9,7 @@ import akka.http.scaladsl.server._
 import akka.stream.ActorMaterializer
 
 import Directives._
+import AppConfiguration._
 
 object Server extends App with Routes {
 
@@ -59,7 +60,7 @@ object Server extends App with Routes {
 
   lazy val routes: Route = vehicleRoutes
 
-  Http().bindAndHandle(routes, "0.0.0.0", 8081)
+  Http().bindAndHandle(routes, apiHost, apiPort)
 
   println(s"Server online at http://0.0.0.0:8081/")
 
