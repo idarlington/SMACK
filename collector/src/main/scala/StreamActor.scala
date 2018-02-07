@@ -55,7 +55,7 @@ class StreamActor extends Actor with ActorLogging with JsonFormatSupport {
           val tiledVehicle =
             TiledVehicle(id, heading, latitude, longitude, run_id, route_id, seconds_since_report, predictable, tile)
           log.info(tiledVehicle.toString)
-          Database.saveOrUpdate((tiledVehicle))
+          Database.saveOrUpdate(tiledVehicle)
           log.info("Saved to DB")
         }
       }

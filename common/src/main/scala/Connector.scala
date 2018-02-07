@@ -1,4 +1,3 @@
-
 import com.outworkers.phantom.connectors.{ CassandraConnection, ContactPoints }
 import com.datastax.driver.core.{ Cluster, Session }
 

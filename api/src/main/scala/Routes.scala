@@ -2,7 +2,6 @@ import ServiceActor._
 import akka.actor.{ ActorRef, ActorSystem }
 import akka.event.Logging
 
-
 import scala.concurrent.duration._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
