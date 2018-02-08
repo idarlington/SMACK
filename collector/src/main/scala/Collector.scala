@@ -11,5 +11,5 @@ object collector extends App {
   import scala.concurrent.duration._
   import scala.language.postfixOps
 
-  system.scheduler.schedule(0 milliseconds, 10 seconds, streamActor, "")
+  system.scheduler.schedule(0 milliseconds, 30 seconds, streamActor, "")
 }

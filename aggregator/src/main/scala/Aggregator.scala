@@ -2,12 +2,12 @@ import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.spark.streaming.kafka010._
 import org.apache.spark.streaming.kafka010.LocationStrategies.PreferConsistent
 import org.apache.spark.streaming.kafka010.ConsumerStrategies.Subscribe
-
 import org.apache.spark._
 import org.apache.spark.streaming._
-
 import spray.json._
-import DefaultJsonProtocol._
+
+import org.apache.spark.sql.SQLContext
+import org.apache.spark.sql.functions._
 
 object Aggregator extends App with JsonFormatSupport {
   val KafkaHost = "kafka:9092"
@@ -30,11 +30,17 @@ object Aggregator extends App with JsonFormatSupport {
     Subscribe[String, String](topics, kafkaParams)
   )
 
-  val messages = stream.map(_.value()).map(_.toJson)
+  val messages = stream.map(_.value()).map(_.parseJson.convertTo[TiledVehicle])
 
   messages.foreachRDD { message =>
     {
+      val sqlContext = SQLContext.getOrCreate(message.sparkContext)
+
+      import sqlContext.implicits._
+
+      val sensorDF = message.toDF()
       println(message.count())
+      sensorDF.show()
     }
   }
 

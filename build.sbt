@@ -61,8 +61,9 @@ lazy val aggregator = project
     settings,
     assemblySettings,
     libraryDependencies ++= commonDependencies ++ Seq(
-      "org.apache.spark" % "spark-streaming-kafka-0-10_2.11" % "2.2.0",
-      "org.apache.spark" % "spark-streaming_2.11"            % "2.2.0"
+      "org.apache.spark" % "spark-streaming-kafka-0-10_2.11" % dependencies.sparkVersion,
+      "org.apache.spark" % "spark-streaming_2.11"            % dependencies.sparkVersion,
+      "org.apache.spark" %% "spark-sql"                      % dependencies.sparkVersion
     )
   )
   .enablePlugins(JavaAppPackaging)
@@ -84,6 +85,7 @@ lazy val dependencies =
     val scalatestV      = "3.0.4"
     val scalacheckV     = "1.13.5"
     val kafkaStreamingV = "2.2.1"
+    val sparkVersion    = "2.2.0"
 
     val logback        = "ch.qos.logback"             % "logback-classic"                 % logbackV
     val logstash       = "net.logstash.logback"       % "logstash-logback-encoder"        % logstashV
