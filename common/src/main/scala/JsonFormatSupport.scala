@@ -7,7 +7,7 @@ abstract class VehicleBuilder(
     heading: Double,
     latitude: Double,
     longitude: Double,
-    run_id: String,
+    run_id: Option[String],
     route_id: String,
     seconds_since_report: Int,
     predictable: Boolean
@@ -18,7 +18,7 @@ final case class Vehicle(
     heading: Double,
     latitude: Double,
     longitude: Double,
-    run_id: String,
+    run_id: Option[String],
     route_id: String,
     seconds_since_report: Int,
     predictable: Boolean
@@ -38,7 +38,7 @@ case class TiledVehicle(
     heading: Double,
     latitude: Double,
     longitude: Double,
-    run_id: String,
+    run_id: Option[String],
     route_id: String,
     seconds_since_report: Int,
     predictable: Boolean,

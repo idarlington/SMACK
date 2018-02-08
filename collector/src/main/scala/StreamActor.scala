@@ -1,17 +1,17 @@
 import java.util.Properties
 
-import akka.actor.{Actor, ActorLogging}
+import akka.actor.{ Actor, ActorLogging }
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.pattern.pipe
-import akka.stream.{ActorMaterializer, ActorMaterializerSettings}
-import org.apache.kafka.clients.producer.{KafkaProducer, ProducerConfig, ProducerRecord}
+import akka.stream.{ ActorMaterializer, ActorMaterializerSettings }
+import org.apache.kafka.clients.producer.{ KafkaProducer, ProducerConfig, ProducerRecord }
 import AppConfiguration._
 import spray.json._
 
 import scala.concurrent.Future
-import scala.util.{Failure, Success}
+import scala.util.{ Failure, Success }
 
 class StreamActor extends Actor with ActorLogging with JsonFormatSupport {
 
@@ -59,8 +59,10 @@ class StreamActor extends Actor with ActorLogging with JsonFormatSupport {
             val tiledVehicle_ =
               TiledVehicle(id, heading, latitude, longitude, run_id, route_id, seconds_since_report, predictable, tile)
             log.info(tiledVehicle_.toString)
-            Future {Database.saveOrUpdate(tiledVehicle_)}
-            Future {producer.send(new ProducerRecord[String, String]("vehicles", id, tiledVehicle_.toJson.toString()))}
+            Future { Database.saveOrUpdate(tiledVehicle_) }
+            Future {
+              producer.send(new ProducerRecord[String, String]("vehicles", id, tiledVehicle_.toJson.toString()))
+            }
             log.info("Saved to DB")
           }
         case Failure(exception) => { log.error(exception, "Failed") }
@@ -68,7 +70,7 @@ class StreamActor extends Actor with ActorLogging with JsonFormatSupport {
 
     }
     case resp @ HttpResponse(code, _, _, _) ⇒
-      log.info("Request failed, response code: ",code)
+      log.info("Request failed, response code: ", code)
       resp.discardEntityBytes()
     case _ ⇒
       log.info("Calling API")

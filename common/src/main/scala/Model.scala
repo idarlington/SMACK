@@ -13,7 +13,7 @@ abstract class VehiclesByTileModel extends Table[VehiclesByTileModel, TiledVehic
   object heading              extends DoubleColumn
   object latitude             extends DoubleColumn
   object longitude            extends DoubleColumn
-  object run_id               extends StringColumn
+  object run_id               extends OptionalStringColumn
   object route_id             extends StringColumn
   object seconds_since_report extends IntColumn
   object predictable          extends BooleanColumn
@@ -35,7 +35,7 @@ abstract class VehiclesModel extends Table[VehiclesModel, TiledVehicle] {
   object heading              extends DoubleColumn
   object latitude             extends DoubleColumn
   object longitude            extends DoubleColumn
-  object run_id               extends StringColumn
+  object run_id               extends OptionalStringColumn
   object route_id             extends StringColumn
   object seconds_since_report extends IntColumn
   object predictable          extends BooleanColumn
