@@ -6,9 +6,10 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.pattern.pipe
 import akka.stream.{ ActorMaterializer, ActorMaterializerSettings }
-import org.apache.kafka.clients.producer.{ KafkaProducer, ProducerConfig }
-
+import org.apache.kafka.clients.producer.{ KafkaProducer, ProducerConfig, ProducerRecord }
 import AppConfiguration._
+
+import spray.json._
 
 class StreamActor extends Actor with ActorLogging with JsonFormatSupport {
 
@@ -18,9 +19,9 @@ class StreamActor extends Actor with ActorLogging with JsonFormatSupport {
     ActorMaterializerSettings(context.system)
   )
 
-  val tileSystem    = new TileSystem()
-  val http          = Http(context.system)
-  val props         = new Properties()
+  val tileSystem = new TileSystem()
+  val http       = Http(context.system)
+  val props      = new Properties()
 
   val URL       = collectorURL
   val KafkaHost = s"$kafkaBroker:$kafkaPort"
@@ -52,10 +53,11 @@ class StreamActor extends Actor with ActorLogging with JsonFormatSupport {
           val predictable          = vehicle.predictable
           val tile                 = tileSystem.latLongToTileXY(latitude, longitude, levelOfDetail)
 
-          val tiledVehicle =
+          val tiledVehicle_ =
             TiledVehicle(id, heading, latitude, longitude, run_id, route_id, seconds_since_report, predictable, tile)
-          log.info(tiledVehicle.toString)
-          Database.saveOrUpdate(tiledVehicle)
+          log.info(tiledVehicle_.toString)
+          /*Database.saveOrUpdate(tiledVehicle_)*/
+          producer.send(new ProducerRecord[String, String]("vehicles", id, tiledVehicle_.toJson.toString))
           log.info("Saved to DB")
         }
       }

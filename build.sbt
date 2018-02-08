@@ -1,6 +1,6 @@
 name := "acdc-assesment"
 organization in ThisBuild := "com.lunatech"
-scalaVersion in ThisBuild := "2.12.3"
+scalaVersion in ThisBuild := "2.11.8"
 
 // PROJECTS
 
@@ -12,7 +12,8 @@ lazy val global = project
   .aggregate(
     common,
     collector,
-    api
+    api,
+    aggregator
   )
 
 lazy val common = project
@@ -54,6 +55,22 @@ lazy val api = project
     common
   )
 
+lazy val aggregator = project
+  .settings(
+    name := "aggregator",
+    settings,
+    assemblySettings,
+    libraryDependencies ++= commonDependencies ++ Seq(
+      "org.apache.spark" % "spark-streaming-kafka-0-10_2.11" % "2.2.0",
+      "org.apache.spark" % "spark-streaming_2.11"            % "2.2.0"
+    )
+  )
+  .enablePlugins(JavaAppPackaging)
+  .enablePlugins(DockerPlugin)
+  .dependsOn(
+    common
+  )
+
 lazy val dependencies =
   new {
     val logbackV        = "1.2.3"
@@ -66,18 +83,20 @@ lazy val dependencies =
     val akkaV           = "2.5.6"
     val scalatestV      = "3.0.4"
     val scalacheckV     = "1.13.5"
+    val kafkaStreamingV = "2.2.1"
 
-    val logback        = "ch.qos.logback"             % "logback-classic"          % logbackV
-    val logstash       = "net.logstash.logback"       % "logstash-logback-encoder" % logstashV
-    val scalaLogging   = "com.typesafe.scala-logging" %% "scala-logging"           % scalaLoggingV
-    val slf4j          = "org.slf4j"                  % "jcl-over-slf4j"           % slf4jV
-    val typesafeConfig = "com.typesafe"               % "config"                   % typesafeConfigV
-    val akka           = "com.typesafe.akka"          %% "akka-stream"             % akkaV
-    val monocleCore    = "com.github.julien-truffaut" %% "monocle-core"            % monocleV
-    val monocleMacro   = "com.github.julien-truffaut" %% "monocle-macro"           % monocleV
-    val pureconfig     = "com.github.pureconfig"      %% "pureconfig"              % pureconfigV
-    val scalatest      = "org.scalatest"              %% "scalatest"               % scalatestV
-    val scalacheck     = "org.scalacheck"             %% "scalacheck"              % scalacheckV
+    val logback        = "ch.qos.logback"             % "logback-classic"                 % logbackV
+    val logstash       = "net.logstash.logback"       % "logstash-logback-encoder"        % logstashV
+    val scalaLogging   = "com.typesafe.scala-logging" %% "scala-logging"                  % scalaLoggingV
+    val slf4j          = "org.slf4j"                  % "jcl-over-slf4j"                  % slf4jV
+    val typesafeConfig = "com.typesafe"               % "config"                          % typesafeConfigV
+    val akka           = "com.typesafe.akka"          %% "akka-stream"                    % akkaV
+    val monocleCore    = "com.github.julien-truffaut" %% "monocle-core"                   % monocleV
+    val monocleMacro   = "com.github.julien-truffaut" %% "monocle-macro"                  % monocleV
+    val pureconfig     = "com.github.pureconfig"      %% "pureconfig"                     % pureconfigV
+    val scalatest      = "org.scalatest"              %% "scalatest"                      % scalatestV
+    val scalacheck     = "org.scalacheck"             %% "scalacheck"                     % scalacheckV
+    val sparkStreaming = "org.apache.spark"           % "spark-streaming-kafka-0-10_2.11" % kafkaStreamingV
   }
 
 lazy val commonDependencies = Seq(
@@ -116,6 +135,7 @@ lazy val commonSettings = Seq(
   scalacOptions ++= compilerOptions,
   resolvers ++= Seq(
     "Local Maven Repository" at "file://" + Path.userHome.absolutePath + "/.m2/repository",
+    "apache-snapshots" at "http://repository.apache.org/snapshots/",
     Resolver.sonatypeRepo("releases"),
     Resolver.sonatypeRepo("snapshots")
   )
